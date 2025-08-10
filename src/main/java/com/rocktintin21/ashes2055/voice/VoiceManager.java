@@ -13,7 +13,7 @@ public class VoiceManager {
         if (entity.level().isClientSide) {
             return;
         }
-        String faction = entity instanceof FactionEntity fe ? fe.getFaction().name().toLowerCase() : "unknown";
+        String faction = entity instanceof FactionEntity fe ? fe.getFaction().getId() : "unknown";
         ResourceLocation id = new ResourceLocation(Ashes2055Mod.MODID, faction + "." + type.getId());
         SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(id);
         if (event != null) {
