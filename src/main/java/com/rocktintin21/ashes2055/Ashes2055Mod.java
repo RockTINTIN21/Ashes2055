@@ -3,6 +3,8 @@ package com.rocktintin21.ashes2055;
 import com.mojang.logging.LogUtils;
 import com.rocktintin21.ashes2055.entity.RaiderStormtrooper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
@@ -152,6 +154,7 @@ public class Ashes2055Mod
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+            event.enqueueWork(() -> EntityRenderers.register(RAIDER_STORMTROOPER.get(), SkeletonRenderer::new));
         }
     }
 }
