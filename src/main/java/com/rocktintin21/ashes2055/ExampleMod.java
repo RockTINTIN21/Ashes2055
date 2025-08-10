@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.rocktintin21.ashes2055;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;

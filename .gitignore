@@ -12,7 +12,7 @@ out
 *.iws
 *.iml
 .idea
-
+/build/
 # gradle
 build
 .gradle
@@ -20,6 +20,8 @@ build
 # other
 eclipse
 run
-
+/.gradle/
+/out/
+/.idea/
 # Files from Forge MDK
 forge*changelog.txt
