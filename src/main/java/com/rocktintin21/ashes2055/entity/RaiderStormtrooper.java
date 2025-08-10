@@ -21,6 +21,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 
 public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntity {
 
@@ -32,10 +34,12 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
     /** time to reload a magazine, in ticks */
     private int reloadTicks = 40;
 
+    private static final int VOICE_INTERVAL_TICKS = 160;
+
     private int bulletsRemaining = magazineSize;
     private int fireCooldown = 0;
     private int reloadCooldown = 0;
-    private int lifeSoundCooldown = 160;
+    private int lifeSoundCooldown = VOICE_INTERVAL_TICKS;
     private int aggroSoundCooldown = 0;
     private boolean hasAggroTarget = false;
 
@@ -105,8 +109,6 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
             reloadCooldown--;
             if (reloadCooldown == 0) {
                 bulletsRemaining = magazineSize;
-                VoiceManager.play(this, VoiceLineType.RELOAD_MAG_IN);
-                VoiceManager.play(this, VoiceLineType.RELOAD);
             }
         }
 
@@ -115,21 +117,23 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
                 if (!hasAggroTarget) {
                     hasAggroTarget = true;
                     if (aggroSoundCooldown <= 0) {
-                        VoiceManager.play(this, VoiceLineType.AGGRESSION);
-                        aggroSoundCooldown = 200;
+                        if (this.random.nextBoolean() && isNearestToTarget(getTarget())) {
+                            VoiceManager.play(this, VoiceLineType.AGGRESSION);
+                        }
+                        aggroSoundCooldown = VOICE_INTERVAL_TICKS;
                     }
                 } else if (--aggroSoundCooldown <= 0) {
-                    aggroSoundCooldown = 200;
+                    aggroSoundCooldown = VOICE_INTERVAL_TICKS;
                     if (this.random.nextBoolean()) {
                         VoiceManager.play(this, VoiceLineType.AGGRESSION);
                     }
                 }
-                lifeSoundCooldown = 160;
+                lifeSoundCooldown = VOICE_INTERVAL_TICKS;
             } else {
                 hasAggroTarget = false;
                 if (aggroSoundCooldown > 0) aggroSoundCooldown--;
                 if (--lifeSoundCooldown <= 0) {
-                    lifeSoundCooldown = 160;
+                    lifeSoundCooldown = VOICE_INTERVAL_TICKS;
                     if (this.random.nextBoolean()) {
                         VoiceManager.play(this, VoiceLineType.LIFE);
                     }
@@ -138,12 +142,25 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
         }
     }
 
+    private boolean isNearestToTarget(LivingEntity target) {
+        double myDist = this.distanceToSqr(target);
+        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(16))) {
+            if (entity == this) continue;
+            if (entity instanceof FactionEntity fe && fe.getFaction() == this.getFaction()) {
+                if (entity.distanceToSqr(target) < myDist) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void performRangedAttack(LivingEntity target, float distanceFactor) {
         if (reloadCooldown > 0 || fireCooldown > 0 || bulletsRemaining <= 0) {
             if (bulletsRemaining <= 0 && reloadCooldown == 0) {
                 reloadCooldown = reloadTicks;
-                VoiceManager.play(this, VoiceLineType.RELOAD_MAG_OUT);
+                VoiceManager.play(this, VoiceLineType.RELOAD);
             }
             return;
         }
@@ -152,6 +169,7 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
         fireCooldown = fireRateTicks;
         if (bulletsRemaining <= 0) {
             reloadCooldown = reloadTicks;
+            VoiceManager.play(this, VoiceLineType.RELOAD);
         }
     }
 
@@ -186,6 +204,15 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
     public void die(DamageSource cause) {
         super.die(cause);
         VoiceManager.play(this, VoiceLineType.DEATH);
+    }
+
+    @Override
+    public boolean killedEntity(ServerLevel level, LivingEntity entity) {
+        boolean result = super.killedEntity(level, entity);
+        if (entity instanceof Player && this.random.nextBoolean()) {
+            VoiceManager.play(this, VoiceLineType.ENEMY_DOWN);
+        }
+        return result;
     }
 
     // setters to tweak combat parameters per mob instance
