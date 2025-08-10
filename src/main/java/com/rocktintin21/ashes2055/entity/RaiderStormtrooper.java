@@ -68,7 +68,11 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
         if (attacker instanceof FactionEntity fe && fe.getFaction() == this.getFaction()) {
             return false;
         }
-        return super.hurt(source, amount);
+        boolean result = super.hurt(source, amount);
+        if (result && this.random.nextFloat() < 0.1f) {
+            VoiceManager.play(this, VoiceLineType.HURT);
+        }
+        return result;
     }
 
     /** Prevent this mob from despawning when difficulty set to peaceful */
@@ -110,8 +114,10 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
             if (getTarget() != null) {
                 if (!hasAggroTarget) {
                     hasAggroTarget = true;
-                    VoiceManager.play(this, VoiceLineType.AGGRESSION);
-                    aggroSoundCooldown = 200;
+                    if (aggroSoundCooldown <= 0) {
+                        VoiceManager.play(this, VoiceLineType.AGGRESSION);
+                        aggroSoundCooldown = 200;
+                    }
                 } else if (--aggroSoundCooldown <= 0) {
                     aggroSoundCooldown = 200;
                     if (this.random.nextBoolean()) {
@@ -121,6 +127,7 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
                 lifeSoundCooldown = 160;
             } else {
                 hasAggroTarget = false;
+                if (aggroSoundCooldown > 0) aggroSoundCooldown--;
                 if (--lifeSoundCooldown <= 0) {
                     lifeSoundCooldown = 160;
                     if (this.random.nextBoolean()) {

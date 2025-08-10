@@ -1,5 +1,4 @@
 package com.rocktintin21.ashes2055;
-
 import com.mojang.logging.LogUtils;
 import com.rocktintin21.ashes2055.entity.RaiderStormtrooper;
 import net.minecraft.client.Minecraft;
@@ -12,17 +11,17 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraftforge.common.ForgeSpawnEggItem;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -61,6 +60,8 @@ public class Ashes2055Mod
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEat().nutrition(1).saturationMod(2f).build())));
+
+
 
     // Register the raider stormtrooper entity
     public static final RegistryObject<EntityType<RaiderStormtrooper>> RAIDER_STORMTROOPER = ENTITY_TYPES.register("raider_stormtrooper",
@@ -123,6 +124,7 @@ public class Ashes2055Mod
     // Add items to creative tabs
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
+
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(EXAMPLE_BLOCK_ITEM);
         }
