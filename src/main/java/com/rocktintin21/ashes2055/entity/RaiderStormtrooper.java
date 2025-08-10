@@ -1,5 +1,8 @@
 package com.rocktintin21.ashes2055.entity;
 
+import com.rocktintin21.ashes2055.voice.VoiceLineType;
+import com.rocktintin21.ashes2055.voice.VoiceManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,6 +18,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 
@@ -31,6 +35,9 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
     private int bulletsRemaining = magazineSize;
     private int fireCooldown = 0;
     private int reloadCooldown = 0;
+    private int lifeSoundCooldown = 160;
+    private int aggroSoundCooldown = 0;
+    private boolean hasAggroTarget = false;
 
     public RaiderStormtrooper(EntityType<? extends RaiderStormtrooper> type, Level level) {
         super(type, level);
@@ -92,7 +99,35 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
         if (fireCooldown > 0) fireCooldown--;
         if (reloadCooldown > 0) {
             reloadCooldown--;
-            if (reloadCooldown == 0) bulletsRemaining = magazineSize;
+            if (reloadCooldown == 0) {
+                bulletsRemaining = magazineSize;
+                VoiceManager.play(this, VoiceLineType.RELOAD_MAG_IN);
+                VoiceManager.play(this, VoiceLineType.RELOAD);
+            }
+        }
+
+        if (!level().isClientSide) {
+            if (getTarget() != null) {
+                if (!hasAggroTarget) {
+                    hasAggroTarget = true;
+                    VoiceManager.play(this, VoiceLineType.AGGRESSION);
+                    aggroSoundCooldown = 200;
+                } else if (--aggroSoundCooldown <= 0) {
+                    aggroSoundCooldown = 200;
+                    if (this.random.nextBoolean()) {
+                        VoiceManager.play(this, VoiceLineType.AGGRESSION);
+                    }
+                }
+                lifeSoundCooldown = 160;
+            } else {
+                hasAggroTarget = false;
+                if (--lifeSoundCooldown <= 0) {
+                    lifeSoundCooldown = 160;
+                    if (this.random.nextBoolean()) {
+                        VoiceManager.play(this, VoiceLineType.LIFE);
+                    }
+                }
+            }
         }
     }
 
@@ -101,6 +136,7 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
         if (reloadCooldown > 0 || fireCooldown > 0 || bulletsRemaining <= 0) {
             if (bulletsRemaining <= 0 && reloadCooldown == 0) {
                 reloadCooldown = reloadTicks;
+                VoiceManager.play(this, VoiceLineType.RELOAD_MAG_OUT);
             }
             return;
         }
@@ -114,7 +150,35 @@ public class RaiderStormtrooper extends AbstractSkeleton implements FactionEntit
 
     @Override
     protected SoundEvent getStepSound() {
-        return SoundEvents.SKELETON_STEP;
+        return SoundEvents.ZOMBIE_STEP;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.PLAYER_BREATH;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.PLAYER_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.PLAYER_DEATH;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        var soundType = state.getSoundType(this.level(), pos, this);
+        SoundEvent sound = soundType.getStepSound();
+        this.playSound(sound, soundType.getVolume() * 0.15F, soundType.getPitch());
+    }
+
+    @Override
+    public void die(DamageSource cause) {
+        super.die(cause);
+        VoiceManager.play(this, VoiceLineType.DEATH);
     }
 
     // setters to tweak combat parameters per mob instance
