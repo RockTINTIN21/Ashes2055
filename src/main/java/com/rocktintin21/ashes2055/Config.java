@@ -45,7 +45,11 @@ public class Config
 
     private static boolean validateItemName(final Object obj)
     {
-        return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
+        if (obj instanceof final String itemName) {
+            ResourceLocation id = ResourceLocation.tryParse(itemName);
+            return id != null && ForgeRegistries.ITEMS.containsKey(id);
+        }
+        return false;
     }
 
     @SubscribeEvent
@@ -57,7 +61,10 @@ public class Config
 
         // convert the list of strings into a set of items
         items = ITEM_STRINGS.get().stream()
-                .map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName)))
+                .map(ResourceLocation::tryParse)
+                .filter(java.util.Objects::nonNull)
+                .map(ForgeRegistries.ITEMS::getValue)
+                .filter(java.util.Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 }

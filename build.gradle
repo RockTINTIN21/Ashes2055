@@ -74,6 +74,10 @@ minecraft {
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
+            // Remap mixin reference maps so third-party mixins (e.g., TACZ) apply correctly
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             mods {
                 "${mod_id}" {
                     source sourceSets.main
@@ -120,6 +124,9 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+
+    // Modrinth repository for TACZ dependency
+    maven { url = "https://api.modrinth.com/maven" }
 }
 
 dependencies {
@@ -144,6 +151,9 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // TACZ - Timeless & Classics Guns: Zero
+    implementation fg.deobf("maven.modrinth:SzzJttH8:1.1.6-hotfix")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
