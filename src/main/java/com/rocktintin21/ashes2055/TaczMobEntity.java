@@ -1,6 +1,5 @@
 package com.rocktintin21.ashes2055;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -9,6 +8,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class TaczMobEntity extends Zombie {
@@ -20,11 +20,14 @@ public class TaczMobEntity extends Zombie {
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         super.populateDefaultEquipmentSlots(random, difficulty);
 
-        // Use a specific TACZ gun if present and avoid deprecated constructors
-        ResourceLocation gunId = ResourceLocation.fromNamespaceAndPath("tacz", "ak47");
-        Item gunItem = ForgeRegistries.ITEMS.getValue(gunId);
-        if (gunItem != null) {
-            this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(gunItem));
+        // Equip the first registered TACZ item so the ID is always valid
+        for (var entry : ForgeRegistries.ITEMS.getEntries()) {
+            ResourceKey<Item> key = entry.getKey();
+            if ("tacz".equals(key.location().getNamespace())) {
+                Item gun = entry.getValue();
+                this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(gun));
+                break;
+            }
         }
     }
 }

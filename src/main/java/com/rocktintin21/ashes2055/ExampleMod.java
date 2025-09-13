@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -21,6 +22,7 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -92,6 +94,8 @@ public class ExampleMod
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
+        // Register entity attributes
+        modEventBus.addListener(this::registerEntityAttributes);
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -117,6 +121,11 @@ public class ExampleMod
             event.accept(EXAMPLE_BLOCK_ITEM);
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS)
             event.accept(TACZ_MOB_SPAWN_EGG);
+    }
+
+    private void registerEntityAttributes(EntityAttributeCreationEvent event)
+    {
+        event.put(TACZ_MOB.get(), Zombie.createAttributes().build());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
