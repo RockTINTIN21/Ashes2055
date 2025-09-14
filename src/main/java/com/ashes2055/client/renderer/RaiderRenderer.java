@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class RaiderRenderer extends HumanoidMobRenderer<RaiderEntity, PlayerModel<RaiderEntity>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Ashes2055.MOD_ID, "textures/entity/raider/raider.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Ashes2055.MOD_ID, "textures/entity/raider/raider_stormtrooper.png");
 
     public RaiderRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerModel<>(context.bakeLayer(ModelLayers.PLAYER), false), 0.5F);

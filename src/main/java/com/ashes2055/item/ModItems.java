@@ -8,11 +8,20 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModItems {
+public final class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, Ashes2055.MOD_ID);
 
-    public static final RegistryObject<Item> RAIDER_SPAWN_EGG = ITEMS.register("raider_spawn_egg",
-            () -> new ForgeSpawnEggItem(ModEntities.RAIDER, 0x544F39, 0x8E8C71,
-                    new Item.Properties()));
+    // Яйцо призыва для вашего RaiderEntity
+    public static final RegistryObject<Item> RAIDER_SPAWN_EGG = ITEMS.register(
+            "raider_spawn_egg",
+            () -> new ForgeSpawnEggItem(
+                    ModEntities.RAIDER,
+                    0x3A3A3A,
+                    0xC43D3D,
+                    new Item.Properties()
+            )
+    );
+
+    private ModItems() {}
 }

@@ -1,0 +1,272 @@
+{
+  "raider.life": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/scav1_canyouhearit_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_canyouhearit_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_canyouhearit_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_canyouhearit_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_clear_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_clear_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_clear_03_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_going_01_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_05" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_06" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_07" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_08" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_08_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_09" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_09_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_10" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_10_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_11" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_11_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_12" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_12_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_13" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_13_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_14" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_14_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_mutter_15" }
+    ]
+  },
+  "raider.aggression": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/scav1_ambush_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_ambush_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_ambush_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_ambush_15_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_ambush_16_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_attention_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_attention_01_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_coverme_01_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_coverme_01_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_coverme_02_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_coverme_02_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_coverme_03_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_coverme_04_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_01_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_02_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_03_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_05_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_06_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_07_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_08_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_contact_09_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_04_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_04_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_05_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_05_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_06_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_06_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_07_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_07_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_08_l" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_09_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_10_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_bad_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_bad_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_bad_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_bad_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_fight_bad_05_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_friendly_down_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_friendly_down_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_friendly_down_03_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_friendly_down_04_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_grenade_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_grenade_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_lostvisual_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_lostvisual_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_lostvisual_03_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_lostvisual_04_bl" }
+    ]
+  },
+  "raider.death": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/scav1_death_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_05" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_06" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_07" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_08" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_09" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_10" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_11" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_12" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_13" },
+      { "type": "file", "name": "ashes2055:raider/scav1_death_14" }
+    ]
+  },
+  "raider.reload": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/scav1_weap_reload_01_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_weap_reload_02_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_weap_reload_03_n" },
+      { "type": "file", "name": "ashes2055:raider/scav1_weap_reload_04_bl" }
+    ]
+  },
+  "raider.hurt": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/scav1_agony_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_agony_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_agony_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_agony_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_broke_hand_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_broke_hand_01_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_broke_leg_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_broke_leg_01_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_05" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_06" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_07" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_08" },
+      { "type": "file", "name": "ashes2055:raider/scav1_hit_09" }
+    ]
+  },
+  "raider.enemy_down": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_01" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_02" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_03" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_04" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_05" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_06" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_07" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_08" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_09" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_10" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_11_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_12_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_13_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_14_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_15_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_16_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_17_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_18_bl" },
+      { "type": "file", "name": "ashes2055:raider/scav1_enemy_down_19_bl" }
+    ]
+  },
+  "raider.fart": {
+    "sounds": [
+      { "type": "file", "name": "ashes2055:raider/fart" }
+    ]
+  },
+  "ak47.fire_1p": {
+    "sounds": [
+      { "name": "ashes2055:guns/ak47/ak_47_fire_1p", "attenuation_distance": 18 }
+    ]
+  },
+  "ak47.fire_3p": {
+    "sounds": [
+      { "name": "ashes2055:guns/ak47/ak_47_fire_3p", "attenuation_distance": 48 }
+    ]
+  },
+  "ak47.far": {
+    "sounds": [
+      { "name": "ashes2055:guns/ak47/ak_47_far", "attenuation_distance": 96 }
+    ]
+  },
+  "ak47.veryfar": {
+    "sounds": [
+      { "name": "ashes2055:guns/ak47/ak_47_veryfar", "attenuation_distance": 160 }
+    ]
+  },
+  "ak47.reload_empty": {
+    "sounds": [
+      { "name": "ashes2055:guns/ak47/ak_47_reload_empty", "attenuation_distance": 18 }
+    ]
+  },
+
+  "homemade_shotgun.fire_1p": {
+    "sounds": [
+      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_fire_1p", "attenuation_distance": 18 }
+    ]
+  },
+  "homemade_shotgun.fire_3p": {
+    "sounds": [
+      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_fire_3p", "attenuation_distance": 48 }
+    ]
+  },
+  "homemade_shotgun.far": {
+    "sounds": [
+      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_far", "attenuation_distance": 96 }
+    ]
+  },
+  "homemade_shotgun.veryfar": {
+    "sounds": [
+      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_veryfar", "attenuation_distance": 160 }
+    ]
+  },
+  "homemade_shotgun.reload_empty": {
+    "sounds": [
+      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_reload_empty", "attenuation_distance": 18 }
+    ]
+  },
+
+  "rpk.fire_1p": {
+    "sounds": [
+      { "name": "ashes2055:guns/rpk/rpk_fire_1p", "attenuation_distance": 18 }
+    ]
+  },
+  "rpk.fire_3p": {
+    "sounds": [
+      { "name": "ashes2055:guns/rpk/rpk_fire_3p", "attenuation_distance": 48 }
+    ]
+  },
+  "rpk.far": {
+    "sounds": [
+      { "name": "ashes2055:guns/rpk/rpk_far", "attenuation_distance": 96 }
+    ]
+  },
+  "rpk.veryfar": {
+    "sounds": [
+      { "name": "ashes2055:guns/rpk/rpk_veryfar", "attenuation_distance": 160 }
+    ]
+  },
+  "rpk.reload_empty": {
+    "sounds": [
+      { "name": "ashes2055:guns/rpk/ak_12_reload_empty", "attenuation_distance": 18 }
+    ]
+  },
+
+  "sks.fire_1p": {
+    "sounds": [
+      { "name": "ashes2055:guns/sks/sks_fire_1p", "attenuation_distance": 18 }
+    ]
+  },
+  "sks.fire_3p": {
+    "sounds": [
+      { "name": "ashes2055:guns/sks/sks_fire_3p", "attenuation_distance": 48 }
+    ]
+  },
+  "sks.far": {
+    "sounds": [
+      { "name": "ashes2055:guns/sks/sks_far", "attenuation_distance": 96 }
+    ]
+  },
+  "sks.veryfar": {
+    "sounds": [
+      { "name": "ashes2055:guns/sks/sks_veryfar", "attenuation_distance": 160 }
+    ]
+  },
+  "sks.reload_empty": {
+    "sounds": [
+      { "name": "ashes2055:guns/sks/sks_reload_empty", "attenuation_distance": 18 }
+    ]
+  },
+  "flesh_hit" : {
+    "sounds" : [
+      { "name": "ashes2055:guns/flesh_hit.empty", "attenuation_distance": 18 }
+    ]
+  }
+}
