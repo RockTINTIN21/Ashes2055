@@ -81,10 +81,6 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
         }
         BulletEntity bullet = new BulletEntity(this.level(), this);
         bullet.setDamage(BULLET_DAMAGE);
-        double d0 = target.getX() - this.getX();
-        double d1 = target.getEyeY() - bullet.getY();
-        double d2 = target.getZ() - this.getZ();
-        bullet.shoot(d0, d1, d2, BulletEntity.SPEED, 0.0F);
         this.level().addFreshEntity(bullet);
         this.level().playSound(null, this, SHOOT_SOUND, SoundSource.HOSTILE, 1.0F, 1.0F);
         shotsFired++;

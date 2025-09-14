@@ -20,6 +20,7 @@ public class BulletEntity extends Projectile {
 
     public BulletEntity(EntityType<? extends BulletEntity> type, Level level) {
         super(type, level);
+        this.setNoGravity(true);
     }
 
     public BulletEntity(Level level, LivingEntity shooter) {
@@ -29,6 +30,8 @@ public class BulletEntity extends Projectile {
         this.setPos(shooter.getX() + look.x * 0.8D,
                 shooter.getEyeY() - 0.1 + look.y * 0.8D,
                 shooter.getZ() + look.z * 0.8D);
+        this.setDeltaMovement(look.scale(SPEED));
+        this.setNoGravity(true);
     }
 
     public void setDamage(float damage) {
