@@ -1,3 +1,5 @@
 {
-  "entity.ashes2055.raider": "Raider"
+  "entity.ashes2055.raider": "Raider",
+  "item.ashes2055.raider_spawn_egg": "Raider Spawn Egg",
+  "itemGroup.ashes2055": "Ashes2055"
 }

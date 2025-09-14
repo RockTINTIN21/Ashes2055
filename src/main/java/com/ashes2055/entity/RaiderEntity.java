@@ -9,9 +9,13 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -20,6 +24,8 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
@@ -39,7 +45,9 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, entity -> !this.isAlliedTo(entity)));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, mob -> !this.isAlliedTo(mob)));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -54,7 +62,7 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
     public void performRangedAttack(LivingEntity target, float distanceFactor) {
         ItemStack bow = this.getMainHandItem();
         if (bow.getItem() instanceof BowItem) {
-            ItemStack arrowStack = this.getProjectile(bow);
+            ItemStack arrowStack = new ItemStack(Items.ARROW);
             AbstractArrow arrow = ProjectileUtil.getMobArrow(this, arrowStack, distanceFactor);
             double d0 = target.getX() - this.getX();
             double d1 = target.getY(0.3333333333333D) - arrow.getY();
@@ -63,6 +71,15 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
             arrow.shoot(d0, d1 + distance * 0.2F, d2, 1.6F, 14 - this.level().getDifficulty().getId() * 4);
             this.level().addFreshEntity(arrow);
         }
+    }
+
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason,
+                                        SpawnGroupData spawnData, CompoundTag data) {
+        SpawnGroupData spawnGroupData = super.finalizeSpawn(level, difficulty, reason, spawnData, data);
+        this.populateDefaultEquipmentSlots(level.getRandom(), difficulty);
+        this.populateDefaultEquipmentEnchantments(level.getRandom(), difficulty);
+        return spawnGroupData;
     }
 
     @Override
