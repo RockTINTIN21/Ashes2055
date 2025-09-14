@@ -15,4 +15,11 @@ public class ModEntities {
             "raider", () -> EntityType.Builder.of(RaiderEntity::new, MobCategory.MONSTER)
                     .sized(0.6F, 1.8F)
                     .build("raider"));
+
+    public static final RegistryObject<EntityType<BulletEntity>> BULLET = ENTITY_TYPES.register(
+            "bullet", () -> EntityType.Builder.<BulletEntity>of(BulletEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+                    .build("bullet"));
 }

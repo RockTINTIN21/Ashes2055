@@ -1,38 +1,54 @@
 package com.ashes2055.entity;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
+import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 
 /**
- * Basic raider mob using a bow and leather armor.
+ * Raider assault mob using a bullet projectile and leather armor.
  */
 public class RaiderEntity extends FactionMob implements RangedAttackMob {
+    // Configurable parameters
+    public static final double MAX_HEALTH = 20.0D;
+    public static final double MOVE_SPEED = 0.25D;
+    public static final double ARMOR = 2.0D;
+    public static final double AGGRO_DISTANCE = 50.0D;
+    public static final float ATTACK_DISTANCE = 50.0F;
+    public static final int ATTACK_INTERVAL = 20; // ticks between shots
+    public static final int RELOAD_TIME = 40; // ticks to reload
+    public static final int MAGAZINE_SIZE = 30;
+    public static final float BULLET_DAMAGE = 4.0F;
+    public static final SoundEvent SHOOT_SOUND = SoundEvents.CROSSBOW_SHOOT;
+
+    private int shotsFired;
+    private int reloadTicks;
+
     public RaiderEntity(EntityType<? extends RaiderEntity> entityType, Level level) {
         super(entityType, level, Faction.RAIDERS);
     }
@@ -40,7 +56,7 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F));
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, MOVE_SPEED, ATTACK_INTERVAL, ATTACK_DISTANCE));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -52,24 +68,49 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 20.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.FOLLOW_RANGE, 32.0D)
-                .add(Attributes.ARMOR, 2.0D);
+                .add(Attributes.MAX_HEALTH, MAX_HEALTH)
+                .add(Attributes.MOVEMENT_SPEED, MOVE_SPEED)
+                .add(Attributes.FOLLOW_RANGE, AGGRO_DISTANCE)
+                .add(Attributes.ARMOR, ARMOR);
     }
 
     @Override
     public void performRangedAttack(LivingEntity target, float distanceFactor) {
-        ItemStack bow = this.getMainHandItem();
-        if (bow.getItem() instanceof BowItem) {
-            ItemStack arrowStack = new ItemStack(Items.ARROW);
-            AbstractArrow arrow = ProjectileUtil.getMobArrow(this, arrowStack, distanceFactor);
-            double d0 = target.getX() - this.getX();
-            double d1 = target.getY(0.3333333333333D) - arrow.getY();
-            double d2 = target.getZ() - this.getZ();
-            double distance = Math.sqrt(d0 * d0 + d2 * d2);
-            arrow.shoot(d0, d1 + distance * 0.2F, d2, 1.6F, 14 - this.level().getDifficulty().getId() * 4);
-            this.level().addFreshEntity(arrow);
+        if (reloadTicks > 0) {
+            return;
+        }
+        BulletEntity bullet = new BulletEntity(this.level(), this);
+        bullet.setDamage(BULLET_DAMAGE);
+        double d0 = target.getX() - this.getX();
+        double d1 = target.getEyeY() - bullet.getY();
+        double d2 = target.getZ() - this.getZ();
+        bullet.shoot(d0, d1, d2, BulletEntity.SPEED, 0.0F);
+        this.level().addFreshEntity(bullet);
+        this.level().playSound(null, this, SHOOT_SOUND, SoundSource.HOSTILE, 1.0F, 1.0F);
+        shotsFired++;
+        if (shotsFired % MAGAZINE_SIZE == 0) {
+            reloadTicks = RELOAD_TIME;
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (reloadTicks > 0) {
+            if (reloadTicks == RELOAD_TIME) {
+                broadcast("магазин вытащен");
+            } else if (reloadTicks == RELOAD_TIME / 2) {
+                broadcast("новый магазин вставлен");
+            } else if (reloadTicks == 1) {
+                broadcast("звук передергивания затвора");
+            }
+            reloadTicks--;
+        }
+    }
+
+    private void broadcast(String message) {
+        if (!this.level().isClientSide && this.level().getServer() != null) {
+            this.level().getServer().getPlayerList().broadcastSystemMessage(Component.literal(message), false);
         }
     }
 
