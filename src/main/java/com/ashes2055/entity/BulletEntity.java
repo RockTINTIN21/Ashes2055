@@ -10,6 +10,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class BulletEntity extends Projectile {
     /** Speed of the bullet when fired. */
@@ -24,7 +25,10 @@ public class BulletEntity extends Projectile {
     public BulletEntity(Level level, LivingEntity shooter) {
         this(ModEntities.BULLET.get(), level);
         this.setOwner(shooter);
-        this.setPos(shooter.getX(), shooter.getEyeY() - 0.1, shooter.getZ());
+        Vec3 look = shooter.getViewVector(1.0F).normalize();
+        this.setPos(shooter.getX() + look.x * 0.8D,
+                shooter.getEyeY() - 0.1 + look.y * 0.8D,
+                shooter.getZ() + look.z * 0.8D);
     }
 
     public void setDamage(float damage) {
@@ -47,12 +51,12 @@ public class BulletEntity extends Projectile {
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
-        if (result.getEntity() != null) {
+        if (result.getEntity() != this.getOwner()) {
             var owner = this.getOwner() instanceof LivingEntity ? (LivingEntity) this.getOwner() : null;
             result.getEntity().hurt(this.damageSources().mobProjectile(this, owner), damage);
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ARROW_HIT, SoundSource.NEUTRAL, 1.0F, 1.0F);
+            this.discard();
         }
-        this.discard();
     }
 
     @Override
