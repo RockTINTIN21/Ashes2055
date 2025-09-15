@@ -183,7 +183,7 @@
   },
   "ak47.reload_empty": {
     "sounds": [
-      { "name": "ashes2055:guns/ak47/ak_47_reload_empty", "attenuation_distance": 18 }
+      { "name": "ashes2055:guns/ak47/ak_47_reload_empty", "attenuation_distance": 40 }
     ]
   },
 
@@ -209,7 +209,7 @@
   },
   "homemade_shotgun.reload_empty": {
     "sounds": [
-      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_reload_empty", "attenuation_distance": 18 }
+      { "name": "ashes2055:guns/homemade_shotgun/homemade_shotgun_reload_empty", "attenuation_distance": 40 }
     ]
   },
 
@@ -235,7 +235,7 @@
   },
   "rpk.reload_empty": {
     "sounds": [
-      { "name": "ashes2055:guns/rpk/ak_12_reload_empty", "attenuation_distance": 18 }
+      { "name": "ashes2055:guns/rpk/ak_12_reload_empty", "attenuation_distance": 40 }
     ]
   },
 
@@ -261,12 +261,12 @@
   },
   "sks.reload_empty": {
     "sounds": [
-      { "name": "ashes2055:guns/sks/sks_reload_empty", "attenuation_distance": 18 }
+      { "name": "ashes2055:guns/sks/sks_reload_empty", "attenuation_distance": 40 }
     ]
   },
   "flesh_hit" : {
     "sounds" : [
-      { "name": "ashes2055:guns/flesh_hit.empty", "attenuation_distance": 18 }
+      { "name": "ashes2055:guns/flesh_hit", "attenuation_distance": 18 }
     ]
   }
 }

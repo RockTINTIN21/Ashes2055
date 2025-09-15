@@ -29,7 +29,10 @@ public class BulletEntity extends Projectile {
     public static final float SPEED = 7.5F;
     private static final int LIFE_TICKS = 200;
     private float damage = 4.0F;
-    private SoundEvent hitSound = ModSounds.FLESH_HIT;
+    private SoundEvent hitSound = ModSounds.FLESH_HIT.get();
+
+    private static final String FLESH_HIT_CD_TAG = "ashes2055_flesh_hit_cd";
+    private static final int FLESH_HIT_COOLDOWN_TICKS = 12; // ~0.6 c при 20 TPS
 
     public BulletEntity(EntityType<? extends BulletEntity> type, Level level) {
         super(type, level);
@@ -49,7 +52,7 @@ public class BulletEntity extends Projectile {
     }
 
     public BulletEntity setHitSound(SoundEvent sound) {
-        this.hitSound = sound != null ? sound : SoundEvents.ANVIL_LAND;
+        this.hitSound = sound;
         return this;
     }
 
@@ -83,27 +86,47 @@ public class BulletEntity extends Projectile {
     protected void onHit(HitResult result) {
         super.onHit(result);
 
-        if (!this.level().isClientSide) {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
-                    this.hitSound, SoundSource.HOSTILE, 0.6F, 1.0F);
+        // Звук при попадании в блок (если нужен другой — задайте свой, иначе можно убрать вовсе)
+        if (!this.level().isClientSide && result instanceof BlockHitResult) {
+            // Например, рикошет/металл и т.п. Или просто ничего не проигрывать.
+            // this.level().playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.RICOCHET.get(), SoundSource.HOSTILE, 0.6F, 1.0F);
+            this.discard();
+            return;
         }
 
         if (result instanceof EntityHitResult ehr) {
             this.onHitEntity(ehr);
-        } else if (result instanceof BlockHitResult) {
-            this.discard();
         }
     }
 
     @Override
     protected void onHitEntity(EntityHitResult ehr) {
         Entity target = ehr.getEntity();
-        Entity owner = this.getOwner();
+        Entity owner  = this.getOwner();
 
         if (!this.level().isClientSide && target.isAlive()) {
+            // Урон
             target.hurt(this.level().damageSources().mobProjectile(this, owner instanceof LivingEntity le ? le : null), this.damage);
 
-            // Если после удара цель умерла — сообщаем владельцу
+            // ===== Анти-спам Flesh Hit (пер-цели) =====
+            long now = this.level().getGameTime();
+            CompoundTag pdata = target.getPersistentData();
+            long nextAllowed = pdata.getLong(FLESH_HIT_CD_TAG);
+
+            if (now >= nextAllowed) {
+                this.level().playSound(
+                        null,
+                        target.getX(), target.getY(), target.getZ(),
+                        this.hitSound != null ? this.hitSound : ModSounds.FLESH_HIT.get(),
+                        SoundSource.HOSTILE,
+                        0.9F, 1.0F
+                );
+                // Обновляем «окно» на будущее проигрывание
+                pdata.putLong(FLESH_HIT_CD_TAG, now + FLESH_HIT_COOLDOWN_TICKS);
+            }
+            // ==========================================
+
+            // Доп. логика — уведомление владельца при смерти цели
             if (target instanceof LivingEntity living && (living.isDeadOrDying() || living.getHealth() <= 0f)) {
                 if (owner instanceof com.ashes2055.entity.RaiderEntity raider) {
                     raider.onEnemyDown();

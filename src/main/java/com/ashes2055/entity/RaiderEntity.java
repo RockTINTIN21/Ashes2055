@@ -119,8 +119,7 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
         Vec3 look = this.getLookAngle().normalize();
         bullet.setPos(bullet.getX() + look.x * 0.25, bullet.getY() + look.y * 0.25, bullet.getZ() + look.z * 0.25);
 
-        bullet.setDamage(this.getBulletDamage())
-                .setHitSound(net.minecraft.sounds.SoundEvents.ANVIL_LAND);
+        bullet.setDamage(this.getBulletDamage());
 
         double dx = target.getX()    - this.getX();
         double dy = target.getEyeY() - this.getEyeY();

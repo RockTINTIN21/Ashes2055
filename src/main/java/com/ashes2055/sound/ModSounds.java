@@ -20,7 +20,7 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> RAIDER_ENEMY_DOWN  = register("raider.enemy_down");
 
     //HIT
-    public static final SoundEvent FLESH_HIT     = register("flesh_hit");
+    public static final RegistryObject<SoundEvent> FLESH_HIT        = register("flesh_hit");
 
     // AK-47
     public static final RegistryObject<SoundEvent> AK47_FIRE_1P     = register("ak47.fire_1p");
