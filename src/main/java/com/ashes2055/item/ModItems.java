@@ -15,4 +15,8 @@ public class ModItems {
     public static final RegistryObject<Item> RAIDER_SPAWN_EGG = ITEMS.register("raider_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntities.RAIDER, 0x544F39, 0x8E8C71,
                     new Item.Properties()));
+
+    public static final RegistryObject<Item> RAIDER_SNIPER_SPAWN_EGG = ITEMS.register("raider_sniper_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntities.RAIDER_SNIPER, 0x3A2F24, 0xC9C7B1,
+                    new Item.Properties()));
 }
