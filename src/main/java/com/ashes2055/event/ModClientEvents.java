@@ -15,5 +15,6 @@ public class ModClientEvents {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.RAIDER.get(), RaiderRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), NoopRenderer::new);
+
     }
 }

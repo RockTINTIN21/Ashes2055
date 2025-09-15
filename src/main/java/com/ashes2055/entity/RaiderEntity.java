@@ -5,7 +5,9 @@ import com.ashes2055.net.Net;
 import com.ashes2055.net.ShotSfxS2C;
 import com.ashes2055.sound.GunTypes;
 import com.ashes2055.sound.ModSounds;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,6 +29,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -37,17 +40,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PacketDistributor.TargetPoint;
 
 import javax.annotation.Nullable;
 
-/**
- * Raider assault mob using a bullet projectile and leather armor.
- */
+
 public class RaiderEntity extends FactionMob implements RangedAttackMob {
-    private GunTypes gunType = GunTypes.AK47; // выберите дефолт или задавайте при спавне
-    // Configurable parameters
+    private GunTypes gunType = GunTypes.AK47;
+
     public static final double MAX_HEALTH = 20.0D;
     public static final double MOVE_SPEED = 0.25D;
     public static final double ARMOR = 2.0D;
@@ -69,6 +69,7 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
     public RaiderEntity(EntityType<? extends RaiderEntity> entityType, Level level) {
         super(entityType, level, Faction.RAIDERS);
     }
+
 
     @Override
     protected void registerGoals() {
@@ -228,18 +229,25 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
         }
     }
 
-    @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance diff, MobSpawnType reason,
-                                        @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
-        var out = super.finalizeSpawn(level, diff, reason, data, tag);
-        float r = this.getRandom().nextFloat();
-        this.gunType = GunTypes.AK47;
-        return out;
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
+        SpawnGroupData result = super.finalizeSpawn(world, difficulty, reason, data, tag);
+
+        Item gunItem = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tacz", "modern_kinetic_gun"));
+        if (gunItem != null) {
+            ItemStack ak = new ItemStack(gunItem);
+
+            CompoundTag nbt = ak.getOrCreateTag();
+            nbt.putString("GunId", "tacz:ak47");
+
+            this.setItemSlot(EquipmentSlot.MAINHAND, ak);
+            this.setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+        }
+
+        return result;
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.LEATHER_HELMET));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.LEATHER_CHESTPLATE));
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.LEATHER_LEGGINGS));
