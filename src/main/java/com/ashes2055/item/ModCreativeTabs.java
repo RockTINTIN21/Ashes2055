@@ -18,6 +18,7 @@ public class ModCreativeTabs {
                     .icon(() -> new ItemStack(ModItems.RAIDER_SPAWN_EGG.get()))
                     .displayItems((params, output) -> {
                         output.accept(ModItems.RAIDER_SPAWN_EGG.get());
+                        output.accept(ModItems.RAIDER_SNIPER_SPAWN_EGG.get());
                     })
                     .build());
 }

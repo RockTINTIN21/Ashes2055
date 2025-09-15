@@ -1,5 +1,7 @@
 {
   "entity.ashes2055.raider": "Raider",
+  "entity.ashes2055.raider_sniper": "Raider Sniper",
   "item.ashes2055.raider_spawn_egg": "Raider Spawn Egg",
+  "item.ashes2055.raider_sniper_spawn_egg": "Raider Sniper Spawn Egg",
   "itemGroup.ashes2055": "Ashes2055"
 }
