@@ -43,28 +43,41 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PacketDistributor.TargetPoint;
 
 import javax.annotation.Nullable;
+import com.ashes2055.entity.ai.MaintainDistanceRangedGoal;
+import com.ashes2055.entity.ai.ReturnToSpawnGoal;
+import com.ashes2055.combat.GunSfx;
 
+import net.minecraft.core.BlockPos;
 
 public class RaiderEntity extends FactionMob implements RangedAttackMob {
     private GunTypes gunType = GunTypes.AK47;
 
-    public static final double MAX_HEALTH = 20.0D;
-    public static final double MOVE_SPEED = 0.25D;
+    public static final double MAX_HEALTH = 25.0D;
+    public static final double MOVE_SPEED = 0.35D;
     public static final double ARMOR = 2.0D;
-    public static final double AGGRO_DISTANCE = 50.0D;
-    public static final float ATTACK_DISTANCE = 50.0F;
-    public static final int ATTACK_INTERVAL = 3; // ticks between shots
-    public static final int RELOAD_TIME = 40; // ticks to reload
+    public static final double AGGRO_DISTANCE = 70.0D;
+    public static final float ATTACK_DISTANCE = 25.0F;
+    public static final int ATTACK_INTERVAL = 1;
+    public static final int RELOAD_TIME = 40;
     public static final int MAGAZINE_SIZE = 30;
-    public static float BULLET_DAMAGE = 4.0F;
-    public static final SoundEvent SHOOT_SOUND = SoundEvents.CROSSBOW_SHOOT;
+    public static float BULLET_DAMAGE = 6.0F;
 
-    private static final int VOICE_PERIOD_TICKS = 100; // 5 сек при 20 TPS
+    private static final int VOICE_PERIOD_TICKS = 100;
     private int voiceCooldown = 0;
     private boolean reloadVoicePlayed = false;
 
     private int shotsFired;
     private int reloadTicks;
+
+    private BlockPos spawnPos;
+
+    public BlockPos getHome() {
+        return spawnPos;
+    }
+
+    public double getPreferredCombatRange() {
+        return ATTACK_DISTANCE;
+    }
 
     public RaiderEntity(EntityType<? extends RaiderEntity> entityType, Level level) {
         super(entityType, level, Faction.RAIDERS);
@@ -74,7 +87,9 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedAttackGoal(this, MOVE_SPEED, ATTACK_INTERVAL, ATTACK_DISTANCE));
+        this.goalSelector.addGoal(1, new MaintainDistanceRangedGoal<>(this, 1, ATTACK_INTERVAL, this::getPreferredCombatRange));
+        this.goalSelector.addGoal(2, new ReturnToSpawnGoal<>(this, this::getHome, 1.0D, 2.0D));
+
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -82,6 +97,9 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, mob -> !this.isAlliedTo(mob)));
+
+
+        this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -150,14 +168,7 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
             reloadTicks = RELOAD_TIME;
 
             if (!this.level().isClientSide) {
-                // Перезарядку имеет смысл слать на меньший радиус (nearMax профиля)
-                double r = this.gunType.profile.nearMax;
-                Net.CH.send(
-                        PacketDistributor.NEAR.with(() -> new TargetPoint(
-                                this.getX(), this.getY(), this.getZ(), r, this.level().dimension())),
-                        new ShotSfxS2C(this.getX(), this.getEyeY(), this.getZ(),
-                                this.gunType.ordinal(), this.getId(), /*reload=*/true)
-                );
+                GunSfx.sendShot(this.level(), this, this.gunType, true);
             }
         }
     }
@@ -231,6 +242,8 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
 
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
         SpawnGroupData result = super.finalizeSpawn(world, difficulty, reason, data, tag);
+        this.spawnPos = this.blockPosition();
+        this.setMaxUpStep(1.0F); // переступает через блоки, визуально ускоряет перемещение
 
         Item gunItem = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("tacz", "modern_kinetic_gun"));
         if (gunItem != null) {
