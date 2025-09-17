@@ -71,12 +71,23 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
 
     private BlockPos spawnPos;
 
+    private static final double INDOOR_RANGE = 3.5;
+    private static final int ENV_CHECK_EVERY_TICKS = 20;
+
+    private boolean isCrampedCached = false;
+    private int envCheckCooldown = 0;
+
     public BlockPos getHome() {
         return spawnPos;
     }
 
     public double getPreferredCombatRange() {
-        return ATTACK_DISTANCE;
+        if (--envCheckCooldown <= 0) {
+            isCrampedCached = computeIsCramped();
+            // немного «шумим» период, чтобы разные мобы не синхронизировались
+            envCheckCooldown = ENV_CHECK_EVERY_TICKS + this.getRandom().nextInt(ENV_CHECK_EVERY_TICKS);
+        }
+        return isCrampedCached ? INDOOR_RANGE : ATTACK_DISTANCE;
     }
 
     public RaiderEntity(EntityType<? extends RaiderEntity> entityType, Level level) {
@@ -266,4 +277,53 @@ public class RaiderEntity extends FactionMob implements RangedAttackMob {
         this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.LEATHER_LEGGINGS));
         this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.LEATHER_BOOTS));
     }
+
+    private boolean isSolidAt(BlockPos p) {
+        var lvl = this.level();
+        var st = lvl.getBlockState(p);
+        // «Солидный» блок — не воздух и с непустой коллизией
+        return !st.isAir() && !st.getCollisionShape(lvl, p).isEmpty();
+    }
+
+    /**
+     * Грубая, но дешёвая эвристика «тесного помещения».
+     * Возвращает true, если над головой низкий потолок/плотные стены, и false, если «улица».
+     */
+    private boolean computeIsCramped() {
+        var lvl = this.level();
+        var pos = this.blockPosition();
+
+        // Быстрый выход: если видно небо — почти наверняка улица
+        // (используем .above(), чтобы избежать артефактов блока в ногах)
+        if (lvl.canSeeSkyFromBelowWater(pos.above())) {
+            return false;
+        }
+
+        // Проверка «потолка»: 4 блока вверх — насколько плотно
+        int roofSolid = 0;
+        for (int dy = 1; dy <= 4; dy++) {
+            if (isSolidAt(pos.above(dy))) roofSolid++;
+        }
+
+        // Минимальный «зазор над головой»: 2 блока над головой должны быть свободны
+        boolean noHeadroom = isSolidAt(pos.above(1)) || isSolidAt(pos.above(2));
+
+        // Плотность «стен» вокруг: кольцо радиуса 2 на уровне ног
+        int samples = 0, solids = 0;
+        final int r = 2;
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dz = -r; dz <= r; dz++) {
+                if (dx == 0 && dz == 0) continue;
+                // берём только «кольцо» и крест — информативно и недорого
+                if (Math.max(Math.abs(dx), Math.abs(dz)) != r && !(dx == 0 || dz == 0)) continue;
+                samples++;
+                if (isSolidAt(pos.offset(dx, 0, dz))) solids++;
+            }
+        }
+        double solidRatio = samples == 0 ? 0.0 : (double) solids / samples;
+
+        // Итоговая эвристика: низкий потолок, плохой зазор, плотные стены — считаем «теснотой»
+        return roofSolid >= 2 || noHeadroom || solidRatio >= 0.40;
+    }
+
 }
